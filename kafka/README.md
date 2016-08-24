@@ -5,7 +5,9 @@
 
 ### 代码依赖
 googlefinance   https://pypi.python.org/pypi/googlefinance
+
 kafka-python    https://github.com/dpkp/kafka-python
+
 schedule        https://pypi.python.org/pypi/schedule
 
 ```sh
