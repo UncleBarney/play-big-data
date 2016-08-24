@@ -21,5 +21,5 @@ CREATE TABLE stock (stock_symbol text, trade_time timestamp, trade_price float, 
 ```
 
 ```sh
-python data-producer.py AAPL stock-analyzer 192.168.99.100:9092
+python data-storage.py stock-analyzer 192.168.99.100:9092 stock stock 192.168.99.100
 ```

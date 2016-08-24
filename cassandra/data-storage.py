@@ -56,8 +56,8 @@ def persist_data(stock_data, cassandra_session):
         statement = "INSERT INTO %s (stock_symbol, trade_time, trade_price) VALUES ('%s', '%s', %f)" % (data_table, symbol, tradetime, price)
         cassandra_session.execute(statement)
         logger.info('Persistend data to cassandra for symbol: %s, price: %f, tradetime: %s' % (symbol, price, tradetime))
-    except Exception as e:
-        logger.error('Failed to persist data to cassandra %s, caused by: %s', (stock_data, e.message))
+    except Exception:
+        logger.error('Failed to persist data to cassandra %s', stock_data)
 
 
 def shutdown_hook(consumer, session):

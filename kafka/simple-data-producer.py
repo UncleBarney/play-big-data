@@ -37,8 +37,8 @@ def fetch_price(producer, symbol):
         logger.debug('Sent stock price for %s to Kafka', symbol)
     except KafkaTimeoutError as timeout_error:
         logger.warn('Failed to send stock price for %s to kafka, caused by: %s', (symbol, timeout_error.message))
-    except Exception as e:
-        logger.warn('Failed to fetch stock price for %s, caused by: %s', (symbol, e.message))
+    except Exception:
+        logger.warn('Failed to fetch stock price for %s', symbol)
 
 
 def shutdown_hook(producer):
