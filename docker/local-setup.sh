@@ -46,6 +46,8 @@ elif [[ ${RUNNING} == "false" ]]; then
     docker start zookeeper
 fi
 
+sleep 2
+
 #
 # - run the kafka broker
 #
@@ -100,4 +102,28 @@ elif [[ ${RUNNING} == "false" ]]; then
     # - otherwise, container exists but not running, start it
     #
     docker start cassandra
+fi
+
+#
+# - run the redis
+#
+echo "start redis"
+RUNNING=$(docker inspect --format="{{ .State.Running }}" redis 2> /dev/null)
+if [[ $? -eq 1 ]]; then
+
+    #
+    # - cannot find docker container named redis, create one
+    # - for docker run command options, see: https://docs.docker.com/engine/reference/run/
+    #
+    docker run \
+        -d \
+        -p 6379:6379 \
+        --name redis \
+        redis:alpine
+elif [[ ${RUNNING} == "false" ]]; then
+
+    #
+    # - otherwise, container exists but not running, start it
+    #
+    docker start redis
 fi
