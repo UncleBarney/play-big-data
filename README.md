@@ -1,1 +1,3 @@
-# big-data-bootcamp
+# play-big-data
+
+Play with various big data frameworks
