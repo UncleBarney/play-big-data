@@ -107,7 +107,12 @@ if __name__ == '__main__':
     cassandra_cluster = Cluster(
         contact_points=contact_points.split(',')
     )
-    session = cassandra_cluster.connect(key_space)
+    session = cassandra_cluster.connect()
+
+
+    session.execute("CREATE KEYSPACE IF NOT EXISTS %s WITH replication = {'class': 'SimpleStrategy', 'replication_factor': '3'} AND durable_writes = 'true'" % key_space)
+    session.set_keyspace(key_space)
+    session.execute("CREATE TABLE IF NOT EXISTS %s (stock_symbol text, trade_time timestamp, trade_price float, PRIMARY KEY (stock_symbol,trade_time))" % data_table)
 
     # - setup proper shutdown hook
     atexit.register(shutdown_hook, consumer, session)
