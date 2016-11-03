@@ -1,11 +1,11 @@
 provider "aws" {
   access_key = "${var.aws_access_key}"
   secret_key = "${var.aws_secret_key}"
-  region     = "us-east-1"
+  region = "us-east-1"
 }
 
 resource "aws_instance" "web" {
-  ami           = "ami-0d729a60"
+  ami = "ami-0d729a60"
   instance_type = "t2.micro"
 
   connection {
