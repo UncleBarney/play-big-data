@@ -65,15 +65,12 @@ def shutdown_hook():
 def fetch_price(symbol):
     """
     helper function to retrieve stock data and send it to kafka
-    :param producer: instance of a kafka producer
     :param symbol: symbol of the stock
     :return: None
     """
     logger.debug('Start to fetch stock price for %s', symbol)
     try:
         price = json.dumps(getQuotes(symbol))
-
-        # - commend out the following lines and uncomment ^ code to fetch actual price from google finance
         logger.debug('Retrieved stock info %s', price)
         producer.send(topic=topic_name, value=price, timestamp_ms=time.time())
         logger.info('Sent stock price for %s to Kafka', symbol)
@@ -92,9 +89,11 @@ def add_stock(symbol):
     if symbol in symbols:
         pass
     else:
+        symbol = symbol.encode('utf-8')
         symbols.add(symbol)
+        logger.info('Add stock retrieve job %s' % symbol)
         schedule.add_job(fetch_price, 'interval', [symbol], seconds=1, id=symbol)
-    return jsonify(list(symbols)), 200
+    return jsonify(results=list(symbols)), 200
 
 
 @app.route('/<symbol>', methods=['DELETE'])
@@ -108,7 +107,7 @@ def del_stock(symbol):
     else:
         symbols.remove(symbol)
         schedule.remove_job(symbol)
-    return jsonify(list(symbols)), 200
+    return jsonify(results=list(symbols)), 200
 
 if __name__ == '__main__':
     atexit.register(shutdown_hook)

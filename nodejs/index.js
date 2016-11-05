@@ -27,7 +27,9 @@ redisclient.on('message', function (channel, message) {
 // - setup webapp routing
 app.use(express.static(__dirname + '/public'));
 app.use('/jquery', express.static(__dirname + '/node_modules/jquery/dist/'));
-app.use('/smoothie', express.static(__dirname + '/node_modules/smoothie/'));
+app.use('/d3', express.static(__dirname + '/node_modules/d3/'));
+app.use('/nvd3', express.static(__dirname + '/node_modules/nvd3/build/'));
+app.use('/bootstrap', express.static(__dirname + '/node_modules/bootstrap/dist'));
 
 server.listen(port, function () {
     console.log('Server started at port %d.', port);

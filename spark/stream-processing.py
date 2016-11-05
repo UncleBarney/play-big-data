@@ -41,25 +41,29 @@ def shutdown_hook(producer):
             logger.warn('Failed to close kafka connection, caused by: %s', e.message)
 
 
-def process(timeobj, rdd):
-    num_of_records = rdd.count()
-    if num_of_records == 0:
-        return
-    price_sum = rdd \
-        .map(lambda record: float(json.loads(record[1].decode('utf-8'))[0].get('LastTradePrice'))) \
-        .reduce(lambda a, b: a + b)
+def process_stream(stream):
 
-    average = price_sum / num_of_records
-    logger.info('Received %d records from kafka, average price is %f' % (num_of_records, average))
-    current_time = time.time()
-    data = json.dumps({
-        'timestamp': current_time,
-        'average': average
-    })
-    try:
-        kafka_producer.send(target_topic, value=data)
-    except KafkaError as error:
-        logger.warn('Failed to send average stock price to kafka, caused by: %s', error.message)
+    def send_to_kafka(rdd):
+        results = rdd.collect()
+        for r in results:
+            data = json.dumps(
+                {
+                    'symbol': r[0],
+                    'timestamp': time.time(),
+                    'average': r[1]
+                }
+            )
+            try:
+                logger.info('Sending average price %s to kafka' % data)
+                kafka_producer.send(target_topic, value=data)
+            except KafkaError as error:
+                logger.warn('Failed to send average stock price to kafka, caused by: %s', error.message)
+
+    def pair(data):
+        record = json.loads(data[1].decode('utf-8'))[0]
+        return record.get('StockSymbol'), (float(record.get('LastTradePrice')), 1)
+
+    stream.map(pair).reduceByKey(lambda a, b: (a[0] + b[0], a[1] + b[1])).map(lambda (k, v): (k, v[0]/v[1])).foreachRDD(send_to_kafka)
 
 if __name__ == '__main__':
     if len(sys.argv) != 4:
@@ -75,7 +79,7 @@ if __name__ == '__main__':
 
     # - instantiate a kafka stream for processing
     directKafkaStream = KafkaUtils.createDirectStream(ssc, [topic], {'metadata.broker.list': brokers})
-    directKafkaStream.foreachRDD(process)
+    process_stream(directKafkaStream)
 
     # - instantiate a simple kafka producer
     kafka_producer = KafkaProducer(
