@@ -127,3 +127,52 @@ elif [[ ${RUNNING} == "false" ]]; then
     #
     docker start redis
 fi
+
+#
+# - run the elasticsearch
+#
+echo "start elasticsearch"
+RUNNING=$(docker inspect --format="{{ .State.Running }}" elasticsearch 2> /dev/null)
+if [[ $? -eq 1 ]]; then
+
+    #
+    # - cannot find docker container named redis, create one
+    # - for docker run command options, see: https://docs.docker.com/engine/reference/run/
+    #
+    docker run \
+        -d \
+        -p 9200:9200 \
+        --name elasticsearch \
+        elasticsearch
+elif [[ ${RUNNING} == "false" ]]; then
+
+    #
+    # - otherwise, container exists but not running, start it
+    #
+    docker start elasticsearch
+fi
+
+#
+# - run the kibana
+#
+echo "start kibana"
+RUNNING=$(docker inspect --format="{{ .State.Running }}" kibana 2> /dev/null)
+if [[ $? -eq 1 ]]; then
+
+    #
+    # - cannot find docker container named redis, create one
+    # - for docker run command options, see: https://docs.docker.com/engine/reference/run/
+    #
+    docker run \
+        -d \
+        -p 5601:5601 \
+        --name kibana \
+        -e ELASTICSEARCH_URL="http://${IP}:9200" \
+        kibana
+elif [[ ${RUNNING} == "false" ]]; then
+
+    #
+    # - otherwise, container exists but not running, start it
+    #
+    docker start kibana
+fi
