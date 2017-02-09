@@ -95,7 +95,7 @@ $(function () {
         var i = getSymbolIndex(symbol, data_points);
 
         data_points[i].values.push(point);
-        if (data_points[i].length > 100) {
+        if (data_points[i].values.length > 100) {
             data_points[i].values.shift();
         }
         loadGraph();
