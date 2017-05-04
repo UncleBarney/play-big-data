@@ -72,7 +72,7 @@ if __name__ == '__main__':
 
     # - create SparkContext and StreamingContext
     sc = SparkContext("local[2]", "StockAveragePrice")
-    sc.setLogLevel('ERROR')
+    sc.setLogLevel('INFO')
     ssc = StreamingContext(sc, 5)
 
     topic, target_topic, brokers = sys.argv[1:]
