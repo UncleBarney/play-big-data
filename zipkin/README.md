@@ -1,5 +1,5 @@
 # Zipkin相关的代码
-以kafka的producer和consumer为例子演示zipkin的工作过程
+以kafka的producer为例子演示zipkin的工作过程
 
 ## 安装依赖
 ```sh
