@@ -2,6 +2,8 @@ from googlefinance import getQuotes
 from kafka import KafkaProducer
 from kafka.errors import KafkaError, KafkaTimeoutError
 from py_zipkin.zipkin import zipkin_span
+from py_zipkin.thread_local import get_zipkin_attrs
+from py_zipkin.util import generate_random_64bit_string
 
 import argparse
 import atexit
@@ -37,10 +39,20 @@ def http_transport_handler(span):
 def fetch_price(symbol):
     return json.dumps(getQuotes(symbol))
 
+def enrich_with_zipkin_data(data):
+    zipkin_attr = get_zipkin_attrs()
+    data[0]['trace_id'] = zipkin_attr.trace_id
+    data[0]['parent_span_id'] = zipkin_attr.span_id
+    data[0]['span_id'] = generate_random_64bit_string()
+    data[0]['is_sampled'] = True if zipkin_attr.is_sampled else False
+    return data
+
 @zipkin_span(service_name='demo', span_name='send_to_kafka')
 def send_to_kafka(producer, price):
     try:
         logger.debug('Retrieved stock info %s', price)
+        price = json.dumps(enrich_with_zipkin_data(json.loads(price)))
+        logger.debug(price)
         producer.send(topic=topic_name, value=price, timestamp_ms=time.time())
         logger.debug('Sent stock price for %s to Kafka', symbol)
     except KafkaTimeoutError as timeout_error:
