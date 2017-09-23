@@ -6,11 +6,13 @@ provider "aws" {
 
 resource "aws_instance" "web" {
   ami = "ami-0d729a60"
-  instance_type = "t2.micro"
+  instance_type = "${var.aws_instance_type}"
+
+  count = 1
 
   connection {
     user = "ubuntu"
-    private_key = "${var.key_path}"
+    private_key = "${file(var.key_path)}"
   }
 
   key_name = "${var.key_name}"

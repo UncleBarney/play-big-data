@@ -1,0 +1,6 @@
+- name: Install Zookeeper
+  hosts: tag_Name_zookeeper*
+  remote_user: ubuntu
+  become: yes
+  roles:
+      - role: AnsibleShipyard.ansible-zookeeper

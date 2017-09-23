@@ -1,9 +1,13 @@
 variable "aws_access_key" {
-  default = "AKIAJWRNFGIGSMLIGKFQ"
+  default = "AKIAIQSVQ42XIFSO3WPQ"
 }
 
 variable "aws_secret_key" {
-  default = "ZaSw5fo3nHRwFxhVxfSe0LtaJ1aCe9JuqAVJ5b7Y"
+  default = "8YwYG5kM/8C0Vj6fB7cVVTiCU4phZi5Lf7g9A9EM"
+}
+
+variable "ami_image" {
+	default = "ami-40d28157"
 }
 
 variable "key_name" {
@@ -14,9 +18,4 @@ variable "key_name" {
 variable "key_path" {
   description = "path to your private key file"
   default = "test.pem"
-}
-
-variable "aws_instance_type" {
-  description = "aws instance type"
-  default = "t2.micro"
 }
