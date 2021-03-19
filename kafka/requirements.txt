@@ -6,7 +6,7 @@ funcsigs==1.0.2
 futures==3.0.5
 googlefinance==0.7
 itsdangerous==0.24
-Jinja2==2.8
+Jinja2==2.11.3
 kafka-python==1.3.1
 MarkupSafe==0.23
 pytz==2016.7
