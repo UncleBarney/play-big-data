@@ -14,4 +14,4 @@ requests==2.13.0
 schedule==0.4.2
 six==1.10.0
 thriftpy==0.3.9
-urllib3==1.21.1
+urllib3==1.26.5
