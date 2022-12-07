@@ -1,6 +1,6 @@
 appdirs==1.4.3
 cassandra-driver==3.6.0
-certifi==2017.4.17
+certifi==2022.12.7
 chardet==3.0.4
 futures==3.1.1
 googlefinance==0.7
